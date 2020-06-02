@@ -11,7 +11,7 @@ ma = Marshmallow(app) # initialize variable
 
 ## DATABASE MODELLING ##
 
-class student(db.Model): # define table with columns below
+class people(db.Model): # define table with columns below
     id = db.Column(db.Integer, primary_key=True)
     rut = db.Column(db.String(10))
     name = db.Column(db.String(70))
@@ -28,17 +28,17 @@ class student(db.Model): # define table with columns below
 
 db.create_all() # method to read all classes and create tables
 
-class StudentSchema(ma.Schema): # set db schema
+class PeopleSchema(ma.Schema): # set db schema
     class Meta:
         fields = ('id', 'rut', 'name', 'last_name', 'age', 'course')
 
-student_schema = StudentSchema() # create schema for one value
-students_schema = StudentSchema(many=True) # create schema for multiple values
+people_schema = PeopleSchema() # create schema for one value
+peoples_schema = PeopleSchema(many=True) # create schema for multiple values
 
 ## ENDPOINTS ##
 
-@app.route('/students', methods=['POST'])
-def create_student():
+@app.route('/people', methods=['POST'])
+def create_people():
 
     rut = request.json['rut'] # receive data from user and store in variables
     name = request.json['name']
@@ -46,22 +46,22 @@ def create_student():
     age = request.json['age']
     course = request.json['course']
 
-    new_student = student(rut, name, last_name, age, course) # create new student in db table
+    new_people = people(rut, name, last_name, age, course) # create new student in db table
 
-    db.session.add(new_student) # store in db
+    db.session.add(new_people) # store in db
     db.session.commit() # finalize db operation
 
-    return student_schema.jsonify(new_student) # forward data entry view to user
+    return people_schema.jsonify(new_people) # forward data entry view to user
 
-@app.route('/students') # query list of students from db table
-def get_students():
-    all_students = student.query.all()
-    result = students_schema.dump(all_students)
+@app.route('/people') # query list of students from db table
+def get_peoples():
+    all_peoples = people.query.all()
+    result = peoples_schema.dump(all_peoples)
     return jsonify(result) # return list in json format
 
-@app.route('/students/<id>', methods=['PUT']) # update student
-def update_student(id):
-    Student = student.query.get(id) # table to be updated
+@app.route('/people/<id>', methods=['PUT']) # update student
+def update_people(id):
+    People = people.query.get(id) # table to be updated
 
     rut = request.json['rut'] # passing data to current fields
     name = request.json['name']
@@ -69,23 +69,23 @@ def update_student(id):
     age = request.json['age']
     course = request.json['course']
 
-    Student.rut = rut # update fields
-    Student.name = name
-    Student.last_name = last_name
-    Student.age = age
-    Student.course = course
+    People.rut = rut # update fields
+    People.name = name
+    People.last_name = last_name
+    People.age = age
+    People.course = course
 
     db.session.commit() # save changes
-    return student_schema.jsonify(Student)
+    return people_schema.jsonify(People)
 
-@app.route('/students/<id>', methods=['DELETE'])
-def delete_student(id):
-    Student = student.query.get(id) # query by id
+@app.route('/people/<id>', methods=['DELETE'])
+def delete_people(id):
+    People = people.query.get(id) # query by id
 
-    db.session.delete(Student) # delete record
+    db.session.delete(People) # delete record
     db.session.commit() # finalize record
 
-    return student_schema.jsonify(Student)
+    return people_schema.jsonify(People)
 
 ## RUN CONFIG ##
 
