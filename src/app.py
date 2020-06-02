@@ -59,6 +59,25 @@ def get_students():
     result = students_schema.dump(all_students)
     return jsonify(result) # return list in json format
 
+@app.route('/students/<id>', methods=['PUT']) # update student
+def update_student(id):
+    Student = student.query.get(id) # table to be updated
+
+    rut = request.json['rut'] # passing data to current fields
+    name = request.json['name']
+    last_name = request.json['last_name']
+    age = request.json['age']
+    course = request.json['course']
+
+    Student.rut = rut # update fields
+    Student.name = name
+    Student.last_name = last_name
+    Student.age = age
+    Student.course = course
+
+    db.session.commit() # save changes
+    return student_schema.jsonify(Student)
+
 ## RUN CONFIG ##
 
 if __name__ == "__main__": # execute app as principal class
