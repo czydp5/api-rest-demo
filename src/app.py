@@ -11,7 +11,7 @@ ma = Marshmallow(app) # pass config to schema variable
 
 ## DATABASE MODELLING ##
 
-class students(db.Model): # create table with columns below
+class student(db.Model): # define table with columns below
     id = db.Column(db.Integer, primary_key=True)
     rut = db.Column(db.String(10))
     name = db.Column(db.String(70))
@@ -25,3 +25,11 @@ class students(db.Model): # create table with columns below
         self.last_name = last_name
         self.age = age
         self.course = course
+
+db.create_all() # method to read all classes and create tables
+
+class studentSchema(ma.Schema): # set db schema fields
+    class Meta:
+        fields = ('id', 'rut', 'name', 'last_name', 'age', 'course')
+
+student_schema = studentSchema # create variable instance to be used elsewhere
