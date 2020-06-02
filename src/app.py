@@ -32,7 +32,8 @@ class StudentSchema(ma.Schema): # set db schema
     class Meta:
         fields = ('id', 'rut', 'name', 'last_name', 'age', 'course')
 
-student_schema = StudentSchema() # create variable instance to be used elsewhere
+student_schema = StudentSchema() # create schema for one value
+students_schema = StudentSchema(many=True) # create schema for multiple values
 
 ## ENDPOINTS ##
 
@@ -51,6 +52,12 @@ def create_student():
     db.session.commit() # finalize db operation
 
     return student_schema.jsonify(new_student) # forward data entry view to user
+
+@app.route('/students') # query list of students from db table
+def get_students():
+    all_students = student.query.all()
+    result = students_schema.dump(all_students)
+    return jsonify(result) # return list in json format
 
 ## RUN CONFIG ##
 
