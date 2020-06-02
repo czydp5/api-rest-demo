@@ -1,4 +1,4 @@
-from flask import Flask, request # framework to build webapps
+from flask import Flask, request, jsonify # framework to build webapps
 from flask_sqlalchemy import SQLAlchemy # ORM for database layer abstraction
 from flask_marshmallow import Marshmallow # allow db schema creation
 
@@ -28,19 +28,29 @@ class student(db.Model): # define table with columns below
 
 db.create_all() # method to read all classes and create tables
 
-class studentSchema(ma.Schema): # set db schema
+class StudentSchema(ma.Schema): # set db schema
     class Meta:
         fields = ('id', 'rut', 'name', 'last_name', 'age', 'course')
 
-student_schema = studentSchema # create variable instance to be used elsewhere
+student_schema = StudentSchema() # create variable instance to be used elsewhere
 
 ## ENDPOINTS ##
 
-@app.route('/student', methods=['POST'])
-def createStudent():
+@app.route('/students', methods=['POST'])
+def create_student():
 
-    print(request.json)
-    return 'received'
+    rut = request.json['rut'] # receive data from user and store in variables
+    name = request.json['name']
+    last_name = request.json['last_name']
+    age = request.json['age']
+    course = request.json['course']
+
+    new_student = student(rut, name, last_name, age, course) # create new student in db table
+
+    db.session.add(new_student) # store in db
+    db.session.commit() # finalize db operation
+
+    return student_schema.jsonify(new_student) # forward data entry view to user
 
 ## RUN CONFIG ##
 
