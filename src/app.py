@@ -78,6 +78,15 @@ def update_student(id):
     db.session.commit() # save changes
     return student_schema.jsonify(Student)
 
+@app.route('/students/<id>', methods=['DELETE'])
+def delete_student(id):
+    Student = student.query.get(id) # query by id
+
+    db.session.delete(Student) # delete record
+    db.session.commit() # finalize record
+
+    return student_schema.jsonify(Student)
+
 ## RUN CONFIG ##
 
 if __name__ == "__main__": # execute app as principal class
