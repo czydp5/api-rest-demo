@@ -90,4 +90,4 @@ def delete_people(id):
 ## RUN CONFIG ##
 
 if __name__ == "__main__": # execute app as principal class
-    app.run(debug = True) # run mode
+    app.run(host = '0.0.0.0', port = 5555, debug = True) # run mode
