@@ -8,3 +8,20 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False #skip warning messages on run
 
 db = SQLALCHEMY(app) # pass config to database variable
 ma = Marshmallow(app) # pass config to schema variable
+
+## DATABASE MODELLING ##
+
+class students(db.Model): # create table with columns below
+    id = db.Column(db.Integer, primary_key=True)
+    rut = db.Column(db.String(10))
+    name = db.Column(db.String(70))
+    last_name =db.Column(db.String(70))
+    age = db.Column(db.Integer)
+    course = db.Column(db.String(70))
+
+    def __init__(self, rut, name, last_name, age, course) # assign incoming data to columns
+        self.rut = rut
+        self.name = name
+        self.last_name = last_name
+        self.age = age
+        self.course = course
