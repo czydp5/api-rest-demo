@@ -1,9 +1,9 @@
-from flask import Flask, request, jsonify # framework to build webapps
+from flask import Flask, request, jsonify, make_response # framework to build webapps
 from flask_sqlalchemy import SQLAlchemy # ORM for database layer abstraction
 from flask_marshmallow import Marshmallow # allow db schema creation
 
 app = Flask(__name__) #set aplication name
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://levely:Elex.184@35.215.208.159/flaskmysql' # pass db parameters new server
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://levely:Elex.184@0.0.0.0/flaskmysql' # pass db parameters new server
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=False #skip warning messages on runtime
 
 db = SQLAlchemy(app) # initialize variable
@@ -51,7 +51,10 @@ def create_people():
     db.session.add(new_people) # store in db
     db.session.commit() # finalize db operation
 
-    return people_schema.jsonify(new_people) # forward data entry view to user
+    my_resp = make_response('Created successfully! - 201 status')
+    my_resp.headers['warning'] = 'Warning'
+    my_resp.status_code = 201
+    return my_resp
 
 @app.route('/people') # query list of students from db table
 def get_peoples():
@@ -87,7 +90,21 @@ def delete_people(id):
 
     return people_schema.jsonify(People)
 
+## ERROR HANDLERS ##
+
+@app.errorhandler(404) # forwards Page Not Found to custom page
+def page_not_found(e):
+    return "Resource not found --> 404 status" #return sample plain text
+
+@app.errorhandler(400) # forwards Page Not Found to custom page
+def page_not_found(e):
+    return "Data incorrect - please re-check and try again --> 400 status" #return sample plain text
+
+@app.errorhandler(500) # forwards Page Not Found to custom page
+def page_not_found(e):
+    return "This is a server error, please check your data and try again --> 500 status" #return sample plain text
+
 ## RUN CONFIG ##
 
-if __name__ == "__main__": # execute app as principal class
-    app.run(host = '0.0.0.0', port = 5555, debug = True) # run mode
+if __name__ == '__main__': # execute app as principal class
+    app.run(host='0.0.0.0',port=5555, debug=False) # run mode
