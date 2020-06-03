@@ -56,6 +56,10 @@ def create_people():
     my_resp.status_code = 201
     return my_resp
 
+@app.route('/') # homePage
+def welcome():
+    return 'Welcome to my API demo'
+    
 @app.route('/people') # query list of students from db table
 def get_peoples():
     all_peoples = people.query.all()
